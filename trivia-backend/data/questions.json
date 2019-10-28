@@ -89,7 +89,7 @@
         "id": 9,
         "points": 100,
         "question": "What genre of music is historically chosen for the re:play party?",
-        "answer": "EDM",
+        "answer": "dubstep",
         "answerType": "STRING",
         "alternativeAnswers": [
           "electronica",
