@@ -1,4 +1,4 @@
-# Trivia Backend API Service
+# Trivia Backend API Service ⚙️
 
 The trivia backend is a REST API that serves questions and answers.  A running example can be seen on [api.reinvent-trivia.com](https://api.reinvent-trivia.com/api/docs/).
 

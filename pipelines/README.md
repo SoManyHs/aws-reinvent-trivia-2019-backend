@@ -8,7 +8,6 @@ In src/ directory:
 * api-service-pipeline.ts: Builds and deploys the backend API service to Fargate
 * api-service-codedeploy-pipeline.ts: Builds and deploys the backend API service to Fargate with CodeDeploy
 * static-site-pipeline.ts: Provisions infrastructure for the static site, like a CloudFront distribution and an S3 bucket, plus bundles and uploads the static site pages to the site's S3 bucket
-* chat-bot-pipeline.ts: Builds and deploys the chat bot Lambda function and Lex model
 
 ## Prep
 
@@ -31,15 +30,12 @@ Install and build everything: `npm install && npm run build`
 Then deploy the stacks:
 
 ```
-cdk deploy --app 'node src/static-site-pipeline.js'
-
 cdk deploy --app 'node src/api-base-image-pipeline.js'
 
 cdk deploy --app 'node src/api-service-pipeline.js'
 OR
 cdk deploy --app 'node src/api-service-codedeploy-pipeline.js'
 
-cdk deploy --app 'node src/chat-bot-pipeline.js'
 ```
 
 See the pipelines in the CodePipeline console.
