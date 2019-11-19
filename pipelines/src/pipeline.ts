@@ -30,7 +30,7 @@ export class TriviaGameCfnPipeline extends cdk.Construct {
         const sourceAction = new actions.GitHubSourceAction({
             actionName: 'GitHubSource',
             owner: 'SoManyHs',
-            repo: 'aws-reinvent-2018-trivia-game',
+            repo: 'aws-reinvent-2019-trivia-game',
             oauthToken: githubAccessToken,
             output: sourceOutput
         });

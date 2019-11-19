@@ -1,17 +1,18 @@
 #!/usr/bin/env node
 import codebuild = require('@aws-cdk/aws-codebuild');
+import codedeploy = require('@aws-cdk/aws-codedeploy');
 import codepipeline = require('@aws-cdk/aws-codepipeline');
 import actions = require('@aws-cdk/aws-codepipeline-actions');
 import ecr = require('@aws-cdk/aws-ecr');
 import iam = require('@aws-cdk/aws-iam');
 import cdk = require('@aws-cdk/core');
 
-class TriviaGameBackendPipelineStack extends cdk.Stack {
+class TriviaGameBackendCodeDeployPipelineStack extends cdk.Stack {
     constructor(parent: cdk.App, name: string, props?: cdk.StackProps) {
         super(parent, name, props);
 
         const pipeline = new codepipeline.Pipeline(this, 'Pipeline', {
-            pipelineName: 'reinvent-trivia-game-trivia-backend-cfn-deploy',
+            pipelineName: 'reinvent-trivia-game-trivia-backend-with-codedeploy',
         });
 
         // Source
@@ -19,7 +20,7 @@ class TriviaGameBackendPipelineStack extends cdk.Stack {
         const sourceOutput = new codepipeline.Artifact('SourceArtifact');
         const sourceAction = new actions.GitHubSourceAction({
             actionName: 'GitHubSource',
-            owner: 'SoManyHs',
+            owner: 'aws-samples',
             repo: 'aws-reinvent-2019-trivia-game',
             oauthToken: githubAccessToken,
             output: sourceOutput
@@ -41,33 +42,18 @@ class TriviaGameBackendPipelineStack extends cdk.Stack {
 
         // Build
         const buildProject = new codebuild.PipelineProject(this, 'BuildProject', {
-            buildSpec: codebuild.BuildSpec.fromSourceFilename('trivia-backend/infra/cdk/buildspec.yml'),
+            buildSpec: codebuild.BuildSpec.fromSourceFilename('trivia-backend/infra/codedeploy-blue-green/buildspec.yml'),
             environment: {
               buildImage: codebuild.LinuxBuildImage.UBUNTU_14_04_NODEJS_10_1_0,
-              environmentVariables: {
-                'ARTIFACTS_BUCKET': {
-                    value: pipeline.artifactBucket.bucketName
-                }
-              },
               privileged: true
             }
         });
 
         buildProject.addToRolePolicy(new iam.PolicyStatement({
             actions: [
-                'ec2:DescribeAvailabilityZones',
-                'route53:ListHostedZonesByName'
+                'cloudformation:DescribeStackResources'
             ],
             resources: ['*']
-        }));
-
-        buildProject.addToRolePolicy(new iam.PolicyStatement({
-            actions: ['ssm:GetParameter'],
-            resources: [cdk.Stack.of(this).formatArn({
-                service: 'ssm',
-                resource: 'parameter',
-                resourceName: 'CertificateArn-*'
-            })]
         }));
 
         buildProject.addToRolePolicy(new iam.PolicyStatement({
@@ -88,12 +74,13 @@ class TriviaGameBackendPipelineStack extends cdk.Stack {
         }));
 
         const buildArtifact = new codepipeline.Artifact('BuildArtifact');
+        const imageDetailsArtifact = new codepipeline.Artifact('ImageDetails');
         const buildAction = new actions.CodeBuildAction({
             actionName: 'CodeBuild',
             project: buildProject,
             input: sourceOutput,
             extraInputs: [baseImageOutput],
-            outputs: [buildArtifact],
+            outputs: [buildArtifact, imageDetailsArtifact],
           });
 
         pipeline.addStage({
@@ -101,58 +88,47 @@ class TriviaGameBackendPipelineStack extends cdk.Stack {
             actions: [buildAction],
         });
 
-        // Test
-        const templatePrefix =  'TriviaBackend';
-        const testStackName = 'TriviaBackendTest';
-        const changeSetName = 'StagedChangeSet';
+        // Deploy
+        this.addDeployStage(pipeline, 'Test', buildArtifact, imageDetailsArtifact);
+        this.addDeployStage(pipeline, 'Prod', buildArtifact, imageDetailsArtifact);
+    }
+
+    private addDeployStage(pipeline: codepipeline.Pipeline,
+        stageName: string,
+        buildOutput: codepipeline.Artifact,
+        imageDetailsOutput: codepipeline.Artifact) {
+        const deploymentGroup = codedeploy.EcsDeploymentGroup.fromEcsDeploymentGroupAttributes(
+            pipeline, 'CodeDeployDeploymentGroup' + stageName, {
+                application: codedeploy.EcsApplication.fromEcsApplicationName(
+                    pipeline,
+                    'CodeDeployApplication' + stageName,
+                    'AppECS-default-trivia-backend-' + stageName.toLowerCase()
+                ),
+                deploymentGroupName: 'DgpECS-default-trivia-backend-' + stageName.toLowerCase()
+            });
 
         pipeline.addStage({
-            stageName: 'Test',
+            stageName,
             actions: [
-                new actions.CloudFormationCreateReplaceChangeSetAction({
-                    actionName: 'PrepareChangesTest',
-                    stackName: testStackName,
-                    changeSetName,
-                    runOrder: 1,
-                    adminPermissions: true,
-                    templatePath: buildArtifact.atPath(templatePrefix + 'Test.template.json'),
-                }),
-                new actions.CloudFormationExecuteChangeSetAction({
-                    actionName: 'ExecuteChangesTest',
-                    stackName: testStackName,
-                    changeSetName,
-                    runOrder: 2
+                new actions.CodeDeployEcsDeployAction({
+                    actionName: 'Deploy' + stageName,
+                    deploymentGroup,
+                    taskDefinitionTemplateFile:
+                        new codepipeline.ArtifactPath(buildOutput, `task-definition-${stageName.toLowerCase()}.json`),
+                    appSpecTemplateFile:
+                        new codepipeline.ArtifactPath(buildOutput, `appspec-${stageName.toLowerCase()}.json`),
+                    containerImageInputs: [{
+                        input: imageDetailsOutput,
+                        taskDefinitionPlaceholder: 'PLACEHOLDER'
+                    }]
                 })
-            ],
-        });
-
-        // Prod
-        const prodStackName = 'TriviaBackendProd';
-
-        pipeline.addStage({
-            stageName: 'Prod',
-            actions: [
-                new actions.CloudFormationCreateReplaceChangeSetAction({
-                    actionName: 'PrepareChangesProd',
-                    stackName: prodStackName,
-                    changeSetName,
-                    runOrder: 1,
-                    adminPermissions: true,
-                    templatePath: buildArtifact.atPath(templatePrefix + 'Prod.template.json'),
-                }),
-                new actions.CloudFormationExecuteChangeSetAction({
-                    actionName: 'ExecuteChangesProd',
-                    stackName: prodStackName,
-                    changeSetName,
-                    runOrder: 2
-                })
-            ],
+            ]
         });
     }
 }
 
 const app = new cdk.App();
-new TriviaGameBackendPipelineStack(app, 'TriviaGameBackendPipeline', {
+new TriviaGameBackendCodeDeployPipelineStack(app, 'TriviaGameBackendCodeDeployPipeline', {
     env: { account: process.env['CDK_DEFAULT_ACCOUNT'], region: 'us-east-1' }
 });
 app.synth();
