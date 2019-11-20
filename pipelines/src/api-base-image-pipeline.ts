@@ -10,7 +10,7 @@ class TriviaGameBackendBaseImagePipeline extends cdk.Stack {
         super(parent, name, props);
 
         const pipeline = new codepipeline.Pipeline(this, 'Pipeline', {
-            pipelineName: 'reinvent-trivia-game-base-image',
+            pipelineName: 'reinvent-trivia-backend-base-image',
         });
 
         // Source
@@ -18,8 +18,8 @@ class TriviaGameBackendBaseImagePipeline extends cdk.Stack {
         const sourceOutput = new codepipeline.Artifact('SourceArtifact');
         const sourceAction = new actions.GitHubSourceAction({
             actionName: 'GitHubSource',
-            owner: 'aws-samples',
-            repo: 'aws-reinvent-2019-trivia-game',
+            owner: 'SoManyHs',
+            repo: 'aws-reinvent-2019-trivia-backend',
             oauthToken: githubAccessToken,
             output: sourceOutput
         });

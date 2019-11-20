@@ -11,16 +11,16 @@ class TriviaGameBackendPipelineStack extends cdk.Stack {
         super(parent, name, props);
 
         const pipeline = new codepipeline.Pipeline(this, 'Pipeline', {
-            pipelineName: 'reinvent-trivia-game-trivia-backend-cfn-deploy',
+            pipelineName: 'reinvent-trivia-game-trivia-backend',
         });
 
         // Source
-        const githubAccessToken = cdk.SecretValue.secretsManager('TriviaGitHubToken');
+        const githubAccessToken = cdk.SecretValue.secretsManager('BackendTriviaGitHubToken');
         const sourceOutput = new codepipeline.Artifact('SourceArtifact');
         const sourceAction = new actions.GitHubSourceAction({
             actionName: 'GitHubSource',
             owner: 'SoManyHs',
-            repo: 'aws-reinvent-2019-trivia-game',
+            repo: 'aws-reinvent-2019-trivia-backend',
             oauthToken: githubAccessToken,
             output: sourceOutput
         });
