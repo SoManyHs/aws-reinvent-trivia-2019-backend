@@ -102,7 +102,7 @@ class TriviaGameBackendCodeDeployPipelineStack extends cdk.Stack {
                 application: codedeploy.EcsApplication.fromEcsApplicationName(
                     pipeline,
                     'CodeDeployApplication' + stageName,
-                    'AppECS-default-trivia-backend-' + stageName.toLowerCase()
+                    'AppECS-default-trivia-demo-backend-' + stageName.toLowerCase()
                 ),
                 deploymentGroupName: 'DgpECS-default-trivia-backend-' + stageName.toLowerCase()
             });
