@@ -93,7 +93,7 @@ router.get('/question/:question_id', function(req, res, next) {
     res.json(foundQuestion);
   } else {
     var err = new Error('Not Found');
-    err.status = 404;
+    err.status = 500;
     next(err);
   }
 });
@@ -154,7 +154,7 @@ router.post('/question/:question_id', function(req, res, next) {
     res.json({ "result" : isCorrect, "id": id });
   } else {
     var err = new Error('Not Found');
-    err.status = 404;
+    err.status = 500;
     next(err);
   }
 });
