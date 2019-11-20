@@ -1,52 +1,5 @@
 [
   {
-    "category": "Know Your History",
-    "questions": [
-      {
-        "id": 1,
-        "points": 100,
-        "question": "What year was the first AWS re:Invent held?",
-        "answer": 2012,
-        "answerType": "NUMBER"
-      },
-      {
-        "id": 2,
-        "points": 200,
-        "question": "What Amazon-favorite sport was introduced to re:Invent attendees in 2016?",
-        "answer": "Broomball",
-        "answerType": "STRING",
-        "alternativeAnswers": [
-        ]
-      },
-      {
-        "id": 3,
-        "points": 300,
-        "question": "What world record was set at the 2017 re:Invent Tatonka Challenge?",
-        "answer": "Largest chicken wing eating contest: 214 people",
-        "answerType": "STRING",
-        "alternativeAnswers": [
-          "wing eating contest",
-          "largest wing eating contest",
-          "biggest wing eating contest",
-          "largest chicken wing eating contest",
-          "biggest chicken wing eating contest",
-          "wing eating competition",
-          "largest wing eating competition",
-          "biggest wing eating competition",
-          "largest chicken wing eating competition",
-          "biggest chicken wing eating competition"
-        ]
-      },
-      {
-        "id": 4,
-        "points": 400,
-        "question": "What year were both Lambda and ECS (Elastic Container Service) announced at re:Invent?",
-        "answer": 2014,
-        "answerType": "NUMBER"
-      }
-    ]
-  },
-  {
     "category": "The Main Event",
     "questions": [
       {
