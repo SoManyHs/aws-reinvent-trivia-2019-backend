@@ -89,7 +89,7 @@
         "id": 9,
         "points": 100,
         "question": "What genre of music is usually played at the re:Play party?",
-        "answer": "EDM",
+        "answer": "dubstep",
         "answerType": "STRING",
         "alternativeAnswers": [
           "electronica",
