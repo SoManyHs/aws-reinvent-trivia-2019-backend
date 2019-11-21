@@ -13,7 +13,7 @@
         "id": 2,
         "points": 200,
         "question": "What Amazon-favorite sport was introduced to re:Invent attendees in 2016?",
-        "answer": "Broomball",
+        "answer": "Broomball 🏑",
         "answerType": "STRING",
         "alternativeAnswers": [
         ]
@@ -22,7 +22,7 @@
         "id": 3,
         "points": 300,
         "question": "What world record was set at the 2017 re:Invent Tatonka Challenge?",
-        "answer": "Largest chicken wing eating contest: 214 people",
+        "answer": "Largest chicken wing eating contest: 214 people 🐓",
         "answerType": "STRING",
         "alternativeAnswers": [
           "wing eating contest",
@@ -89,7 +89,7 @@
         "id": 9,
         "points": 100,
         "question": "What genre of music is usually played at the re:Play party?",
-        "answer": "dubstep",
+        "answer": "dubstep 💃",
         "answerType": "STRING",
         "alternativeAnswers": [
           "electronica",
@@ -156,7 +156,7 @@
         "id": 14,
         "points": 200,
         "question": "What sports star made a surprise experience at Midnight Madness in 2017?",
-        "answer": "Shaq",
+        "answer": "Shaq 🏀",
         "answerType": "STRING",
         "alternativeAnswers": [
           "Shaquille O'Neal",
