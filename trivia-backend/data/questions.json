@@ -53,7 +53,7 @@
         "id": 5,
         "points": 100,
         "question": "What webinar helps people learn about re:Invent leading up to the big event?",
-        "answer": "How to re:Invent",
+        "answer": "How to re:Invent 🔧",
         "answerType": "STRING",
         "alternativeAnswers": [
           "how to reinvent"
@@ -69,7 +69,7 @@
       {
         "id": 7,
         "points": 300,
-        "question": "What year did twitch.tv/aws start streaming at re:Invent?",
+        "question": "What year did twitch.tv/aws start streaming at re:Invent? 📺",
         "answer": 2016,
         "answerType": "NUMBER"
       },
