@@ -9,8 +9,8 @@ phases:
       - echo "cd into $CODEBUILD_SRC_DIR"
       - cd $CODEBUILD_SRC_DIR
       # Download the ecs-cli-v2 linux binary.
-      - wget https://ecs-cli-v2-release.s3.amazonaws.com/ecs-preview-linux-v0.0.5-136-gfc8fcfc
-      - mv ./ecs-preview-linux-v0.0.5-136-gfc8fcfc ./ecs-preview
+      - wget https://ecs-cli-v2-release.s3.amazonaws.com/ecs-preview-linux-v0.0.7
+      - mv ./ecs-preview-linux-v0.0.7 ./ecs-preview
       - chmod +x ./ecs-preview
   build:
     commands:
