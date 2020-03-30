@@ -1,0 +1,27 @@
+# This YAML file defines the relationship and deployment ordering of your environments.
+
+# The name of the pipeline
+name: pipeline-backend-aws-samples-aws-reinvent-2019-trivia-game
+
+# The version of the schema used in this template
+version: 1
+
+# This section defines the source artifacts.
+source:
+  # The name of the provider that is used to store the source artifacts.
+  provider: GitHub
+  # Additional properties that further specifies the exact location
+  # the artifacts should be sourced from. For example, the GitHub provider
+  # has the following properties: repository, branch.
+  properties:
+    access_token_secret: github-token-backend-aws-reinvent-2019-trivia-game
+    branch: master
+    repository: https://github.com/aws-samples/aws-reinvent-2019-trivia-game
+
+# The deployment section defines the order the pipeline will deploy
+# to your environments.
+stages:
+    - # The name of the environment to deploy to.
+      name: hotdog
+    - # The name of the environment to deploy to.
+      name: staging
